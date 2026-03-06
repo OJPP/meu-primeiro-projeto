@@ -1,0 +1,30 @@
+language: java
+
+# Travis já não mantém imagens antigas; usar dist moderno
+dist: jammy
+
+# Spring Boot 4.x usa Java 17 ou 21
+jdk:
+  - openjdk21
+
+# Cache para builds mais rápidos
+cache:
+  directories:
+    - $HOME/.m2
+
+# Comandos de build
+script:
+  - mvn clean verify -B
+
+# Opcional: gerar artefacto para download
+before_deploy:
+  - mvn package -DskipTests
+
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  file: target/*.jar
+  skip_cleanup: true
+  on:
+    tags: true
+
